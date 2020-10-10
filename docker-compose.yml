@@ -1,0 +1,17 @@
+version: '3'
+services:
+    postgres:
+        image: postgres:11-alpine
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=organizer
+        restart: always
+        ports:
+            - 127.0.0.1:5433:5432
+        volumes:
+            - type: volume
+              source: db-data
+              target: /var/lib/postgresql/data
+volumes: 
+    db-data:
