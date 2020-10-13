@@ -1,8 +1,9 @@
 import { validate } from "class-validator";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getRepository } from "typeorm";
 import * as jwt from 'jsonwebtoken';
 import { User } from "../entities/User";
+import ErrorCustom, { StatusCode } from "../helpers/ErrorCustom";
 
 export default class AuthController{
 
@@ -15,23 +16,20 @@ export default class AuthController{
         user.lastname = lastName;
 
         const errors = await validate(user);
-        if(errors.length) throw new Error('validation user failed');
+        if(errors.length) throw new ErrorCustom(StatusCode.BadRequest, 'user validation failed');
 
         user.hashPassword();
 
         const userCreate = await getRepository(User).save(user);
-        if(!userCreate) throw new Error('creation user failed');
-
         return userCreate;
     }
 
-    static registerUserResponse = async (req:Request, res:Response) => {
+    static registerUserResponse = async (req:Request, res:Response, next:NextFunction) => {
         try {
             const user = await AuthController.registerUser(req, res);
-            res.status(201).send(`registration succesfully for ${user.email}`);
+            res.status(StatusCode.Created).send(`registration succesfully for ${user.email}`);
         } catch (error) {
-            console.error("something went wrong: ", error);
-            res.status(400).send();   
+            next(error);  
         }
     }
 
@@ -39,8 +37,9 @@ export default class AuthController{
         const {email, password} = req.body;
         const user:User = await getRepository(User).findOne({email});
 
-        if(!user) throw new Error('not found');
-        if(!user.isUnencryptedPasswordValid(password)) throw new Error('unhautorized');
+        //always return unauthorized to not expose information
+        if(!user) throw new ErrorCustom(StatusCode.Unauthorized, "unhautorized");
+        if(!user.isUnencryptedPasswordValid(password)) throw new ErrorCustom(StatusCode.Unauthorized, "unhautorized");
 
         //sing token
         const token = jwt.sign({
@@ -53,13 +52,12 @@ export default class AuthController{
         return token;
     }
 
-    static loginUserResponse = async (req:Request, res:Response) => {
+    static loginUserResponse = async (req:Request, res:Response, next:NextFunction) => {
         try{
             const token = await AuthController.loginUser(req, res);
-            res.status(200).send(token);
+            res.status(StatusCode.Ok).send(token);
         }catch(error){
-            console.error("something went wrong: ", error);
-            res.status(401).send();
+            next(error);
         }
     }
 }

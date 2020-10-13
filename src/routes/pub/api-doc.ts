@@ -12,11 +12,7 @@ const swaggerDefinition: swaggerJSDoc.SwaggerDefinition = {
 		version: pjson.version,
 		description: 'organizer api',
 	},
-	servers: [
-		{
-			url: `http://127.0.0.1:3010/`
-		},
-	],
+	servers: [{url: `http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}/`}],
 	components: {
 		securitySchemes: {
 			jwtAuth: {

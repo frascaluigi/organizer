@@ -1,5 +1,6 @@
 import {Router} from "express";
 import EventController from "../controllers/EventController";
+import { uuidRegex } from "../helpers/util";
 import {checkToken} from '../middlewares/checkToken';
 const router = Router();
 
@@ -44,11 +45,11 @@ const router = Router();
  *       200:
  *         description: return event details
  */
-router.get('/:id', [checkToken], EventController.getEventByIdResponse);
+router.get(`/:id(${uuidRegex})`, [checkToken], EventController.getEventByIdResponse);
 
 /**
  * @swagger
- *  /event/{period}:
+ *  /event/by-period/{period}:
  *   get:
  *     tags:
  *       - Event
@@ -67,7 +68,30 @@ router.get('/:id', [checkToken], EventController.getEventByIdResponse);
  *       200:
  *         description: return events in that period
  */
-router.get('/', [checkToken], EventController.getEventByPeriodResponse);
+router.get(
+    ['/by-period','/by-period/:period'], 
+    [checkToken], 
+    EventController.getEventByPeriodResponse);
+
+/**
+ * @swagger
+ *  /event/in-week/:
+ *   get:
+ *     tags:
+ *       - Event
+ *     description: get user event by event id
+ *     security:
+ *       - jwtAuth: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: return events in that period
+ */
+router.get(
+    '/in-week', 
+    [checkToken], 
+    EventController.getEventByWeekResponse);
 
 /**
  * @swagger
@@ -115,7 +139,7 @@ router.post('/', [checkToken], EventController.createEventResponse);
  *       204:
  *         description: NO CONTENT
  */
-router.put('/:id', [checkToken], EventController.updateEventResponse);
+router.put(`/:id(${uuidRegex})`, [checkToken], EventController.updateEventResponse);
 
 /**
  * @swagger
@@ -138,6 +162,6 @@ router.put('/:id', [checkToken], EventController.updateEventResponse);
  *       204:
  *         description: NO CONTENT
  */
-router.delete('/:id', [checkToken], EventController.deleteEventByIdResponse);
+router.delete(`/:id(${uuidRegex})`, [checkToken], EventController.deleteEventByIdResponse);
 
 export default router;

@@ -4,11 +4,12 @@ import * as helmet from "helmet";
 import * as bodyparser from 'body-parser';
 import routes from './src/routes';
 import {createConnection, ConnectionOptions} from "typeorm";
+import { handleError } from './src/middlewares/handleError';
 
 const connection:ConnectionOptions = {
     type: "postgres",
     host: process.env.TYPEORM_HOST,
-    port: parseInt(process.env.TYPEORM_PORT),
+    port: parseInt(process.env.TYPEORM_PORT) || 5432,
     username: process.env.TYPEORM_USER,
     password: process.env.TYPEORM_PASSWORD,
     database: process.env.TYPEORM_DATABASE,
@@ -41,11 +42,15 @@ app.use(bodyparser.json({ limit: '12mb' }));
 
 app.use('/',routes);
 
+//error middleware
+app.use(handleError);
+
 createConnection(connection)
     .then(() => {
         console.log("connection started");
-        app.listen('3010', () => {
-            console.log("organizer server started at port 3010");
+        app.listen(process.env.SERVICE_PORT, () => {
+            console.log(`URL http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}`);
+            console.log(`Organizer server started at port ${process.env.SERVICE_PORT}`);
         });
     })
     .catch((err) => console.error("something is wrong: ", err));

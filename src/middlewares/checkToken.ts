@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import * as jwt from "jsonwebtoken";
+import { StatusCode } from "../helpers/ErrorCustom";
 
 
 export const checkToken = (req:Request, res:Response, next:NextFunction) => {
@@ -11,7 +12,7 @@ export const checkToken = (req:Request, res:Response, next:NextFunction) => {
         tokenPayload = jwt.verify(token, process.env.JWT_SECRET);
         res.locals.tokenPayload = tokenPayload;
     }catch(error){
-        res.status(401).send();
+        res.status(StatusCode.Unauthorized).send();
         return;
     }
 
