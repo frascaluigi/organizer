@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Length } from "class-validator";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
 
 
@@ -9,6 +10,7 @@ export class Event{
     id: string;
 
     @Column()
+    @Length(2,128)
     name: string;
 
     @Column()
@@ -20,7 +22,13 @@ export class Event{
     @Column()
     end: Date;
 
-    @ManyToOne(() => User, user => user.events)
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn({  select: false })
+    updateAt: Date;
+
+    @ManyToOne(() => User, user => user.events, { onDelete: "CASCADE" })
     user: User;
 
 }

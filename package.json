@@ -6,11 +6,39 @@
   "repository": "https://github.com/frascaluigi/organizer.git",
   "author": "Luigi Frasca",
   "license": "MIT",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.(test|spec).(ts|js)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "jest.tsconfig.json"
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "text-summary"
+    ]
+  },
   "scripts": {
     "tsc": "tsc",
     "start": "source .env/development.env && tsnd --respawn index.ts ",
     "start:prod": "source .env/production.env && tsnd --respawn index.ts ",
-    "start:docker": "docker-compose up -d"
+    "setup:docker": "docker-compose up -d",
+    "build": "rm -rf ./build && tsc",
+    "test": "source .env/test.env && jest"
   },
   "dependencies": {
     "@types/cors": "^2.8.8",
@@ -26,6 +54,7 @@
     "helmet": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.4.1",
+    "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^4.2.3",
     "swagger-ui-express": "^4.1.4",
     "typeorm": "^0.2.28",
@@ -35,8 +64,13 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.8",
+    "@types/jest": "^26.0.14",
+    "@types/supertest": "^2.0.10",
     "@types/swagger-jsdoc": "^3.0.2",
     "@types/swagger-ui-express": "^4.1.2",
+    "jest": "^26.5.3",
+    "supertest": "^5.0.0",
+    "ts-jest": "^26.4.1",
     "ts-node-dev": "^1.0.0-pre.63"
   }
 }

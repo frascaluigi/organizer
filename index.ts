@@ -1,12 +1,7 @@
-import * as express from 'express';
-import * as cors from "cors";
-import * as helmet from "helmet";
-import * as bodyparser from 'body-parser';
-import routes from './src/routes';
 import {createConnection, ConnectionOptions} from "typeorm";
-import { handleError } from './src/middlewares/handleError';
+import startApp from './appExpressConfig';
 
-const connection:ConnectionOptions = {
+export const connection:ConnectionOptions = {
     type: "postgres",
     host: process.env.TYPEORM_HOST,
     port: parseInt(process.env.TYPEORM_PORT) || 5432,
@@ -35,22 +30,14 @@ const connection:ConnectionOptions = {
     uuidExtension: 'pgcrypto'
 }
 
-const app = express();
-app.use(cors())
-app.use(helmet());
-app.use(bodyparser.json({ limit: '12mb' }));
-
-app.use('/',routes);
-
-//error middleware
-app.use(handleError);
-
+process.env.NODE_ENV !== 'test' && 
 createConnection(connection)
     .then(() => {
-        console.log("connection started");
+        console.info("connection started");
+        const app=startApp();
         app.listen(process.env.SERVICE_PORT, () => {
-            console.log(`URL http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}`);
-            console.log(`Organizer server started at port ${process.env.SERVICE_PORT}`);
+            console.info(`URL http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}`);
+            console.info(`Organizer server started at port ${process.env.SERVICE_PORT}`);
         });
     })
     .catch((err) => console.error("something is wrong: ", err));
