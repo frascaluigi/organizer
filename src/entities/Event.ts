@@ -14,6 +14,7 @@ export class Event{
     name: string;
 
     @Column()
+    @Length(2,128)
     address: string;
 
     @Column()

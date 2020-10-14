@@ -104,6 +104,13 @@ class EventController{
     private static updateEvent = async (req:Request, res:Response):Promise<Event> => {
         const eventId = req.params.id;
         if(!eventId) throw new ErrorCustom(StatusCode.BadRequest, 'event id is required');
+
+        //it could be done with middleware
+        if(!(await getRepository(Event).findOne({
+            id: eventId,
+            user: res.locals.tokenPayload?.userId
+        }))) throw new ErrorCustom(StatusCode.BadRequest, 'event not found');
+
         const partialEvent: any = {...req.body, id: eventId};
         const eventToUpdate = await getRepository(Event).preload(partialEvent);
         if(!eventToUpdate) throw new ErrorCustom(StatusCode.NotFound, 'event id not found');

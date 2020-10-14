@@ -15,7 +15,6 @@ describe('Auth Controller Test', () => {
     beforeAll((done) => {
         createConnection(connection)
           .then(async connection => {
-            // Create a new express application instance
             dbConnection = connection
             done();
           })

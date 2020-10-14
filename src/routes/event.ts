@@ -124,6 +124,12 @@ router.post('/', [checkToken], EventController.createEventResponse);
  *     tags:
  *       - Event
  *     summary: "update an event by id"
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: id event
+ *         required: true
+ *         type: string
  *     requestBody:
  *         description: information about event
  *         required: true
