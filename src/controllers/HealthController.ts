@@ -9,7 +9,8 @@ class HealthController{
         console.info('check health of application ..');
         res.status(StatusCode.Ok).send({
             name: pjson.name,
-            version: pjson.version
+            version: pjson.version,
+            environment: process.env.NODE_ENV
         });
     }
 }

@@ -78,8 +78,7 @@ class EventController{
         event.address = address;
 
         //check date
-        const checkDate = compareDesc(new Date(start), new Date(end))
-        console.log("checkDate: ", checkDate);
+        const checkDate = compareDesc(new Date(start), new Date(end));
         if(checkDate < 0) throw new ErrorCustom(StatusCode.BadRequest, 'end date must be greater than start date');
         event.start = start;
         event.end = end;
