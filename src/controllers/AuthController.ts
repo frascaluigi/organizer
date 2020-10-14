@@ -38,8 +38,8 @@ export default class AuthController{
         const user:User = await getRepository(User).findOne({email});
 
         //always return unauthorized to not expose information
-        if(!user) throw new ErrorCustom(StatusCode.Unauthorized, "unhautorized");
-        if(!user.isUnencryptedPasswordValid(password)) throw new ErrorCustom(StatusCode.Unauthorized, "unhautorized");
+        if(!user) throw new ErrorCustom(StatusCode.Unauthorized, "unauthorized");
+        if(!user.isUnencryptedPasswordValid(password)) throw new ErrorCustom(StatusCode.Unauthorized, "unauthorized");
 
         //sing token
         const token = jwt.sign({
@@ -55,7 +55,7 @@ export default class AuthController{
     static loginUserResponse = async (req:Request, res:Response, next:NextFunction) => {
         try{
             const token = await AuthController.loginUser(req, res);
-            res.status(StatusCode.Ok).send(token);
+            res.status(StatusCode.Ok).send({token});
         }catch(error){
             next(error);
         }

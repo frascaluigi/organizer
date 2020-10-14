@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Event } from "./Event";
 import * as bcrypt from "bcryptjs"
 import { Length } from "class-validator";
@@ -18,15 +18,17 @@ export class User{
     password: string;
 
     @Column()
+    @Length(1,128)
     firstname: string;
 
     @Column()
+    @Length(1,128)
     lastname: string;
 
     @CreateDateColumn()
     createdAt: Date;
 
-    @CreateDateColumn()
+    @UpdateDateColumn({  select: false })
     updateAt: Date;
 
     @OneToMany(() => Event, event => event.user)

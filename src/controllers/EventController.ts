@@ -12,7 +12,7 @@ class EventController{
     private static getEventById = async (req:Request, res:Response):Promise<Event> => {
         const eventId = req.params.id;
         const userId = res.locals.tokenPayload?.userId;
-        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unhautorized');
+        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unauthorized');
         const event = await getRepository(Event).findOne({
             where:{
                 user: userId, 
@@ -35,7 +35,7 @@ class EventController{
     static getEventByPeriodResponse = async (req:Request, res:Response) => {
         const period = !isNaN(parseInt(req.params.period)) ? parseInt(req.params.period) : DEFAULT_PERIOD;
         const userId = res.locals.tokenPayload?.userId;
-        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unhautorized');
+        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unauthorized');
         //next seven (or another period) days 
         const events = await getRepository(Event).find({
             where:{
@@ -50,7 +50,7 @@ class EventController{
 
     static getEventByWeekResponse = async (req:Request, res:Response) => {
         const userId = res.locals.tokenPayload?.userId;
-        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unhautorized');
+        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unauthorized');
 
         const today = new Date();
         const startWeek = startOfWeek(today);
@@ -70,7 +70,7 @@ class EventController{
 
     private static createEvent = async (req:Request, res:Response):Promise<Event> => {
         const userId = res.locals.tokenPayload?.userId;
-        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unhautorized');
+        if(!userId) throw new ErrorCustom(StatusCode.Unauthorized, 'unauthorized');
 
         const {name, address, start, end} = req.body;
         const event = new Event();
@@ -85,7 +85,9 @@ class EventController{
         event.end = end;
         
         event.user = res.locals.tokenPayload?.userId;
-        
+        const errors = await validate(event);
+        errors && errors.length && console.error("validation errors: ", JSON.stringify(errors, null, 4));
+        if (errors.length > 0) throw new ErrorCustom(StatusCode.BadRequest, `event fields not valid`);
         const eventCreated = await getRepository(Event).save(event);
         return eventCreated;
     }
