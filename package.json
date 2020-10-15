@@ -1,6 +1,6 @@
 {
   "name": "organizer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "api for user tasks",
   "main": "index.ts",
   "repository": "https://github.com/frascaluigi/organizer.git",
