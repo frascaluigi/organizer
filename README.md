@@ -33,13 +33,17 @@ All project is written in **TypeScript**.
     * /health.test.ts This file contain simple test case for our /health route.
 
 ### Public Route
-There are 3 public route:
+There are 4 public route:
 * /health route to check the health of the application, returns information on development environment and version
 * /auth/login/ route to login
 * /auth/register route to register
+* /documentation for swagger docs
 
 ### Private Route
 All other routes below /event are private and require JWT Token.
+
+### Static Template
+All other routes render a Welcome Project Template
 
 ### CURL Examples
 #### Login
