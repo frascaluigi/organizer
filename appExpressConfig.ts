@@ -6,6 +6,7 @@ import * as helmet from "helmet";
 import * as bodyparser from 'body-parser';
 import routes from './src/routes';
 import { handleError } from './src/middlewares/handleError';
+import * as path from 'path';
 
 
 const startApp = () => {
@@ -15,6 +16,9 @@ const startApp = () => {
     app.use(helmet());
 
     app.use(bodyparser.json({ limit: '12mb' }));
+
+    app.set("view engine", "pug");
+    app.set("views", path.join(__dirname, "src", "views"));
 
     app.use('/',routes);
 
