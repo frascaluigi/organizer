@@ -16,10 +16,10 @@ export default class AuthController{
         user.lastname = lastName;
 
         const errors = await validate(user);
-        if(errors.length) throw new ErrorCustom(StatusCode.BadRequest, 'user validation failed');
+        errors && errors.length && console.error("validation errors: ", JSON.stringify(errors, null, 4));
+        if (errors.length > 0) throw new ErrorCustom(StatusCode.BadRequest, `user fields not valid`);
 
         user.hashPassword();
-
         const userCreate = await getRepository(User).save(user);
         return userCreate;
     }
@@ -27,7 +27,7 @@ export default class AuthController{
     static registerUserResponse = async (req:Request, res:Response, next:NextFunction) => {
         try {
             const user = await AuthController.registerUser(req, res);
-            res.status(StatusCode.Created).send(`registration succesfully for ${user.email}`);
+            res.status(StatusCode.Created).send({id: user.id});
         } catch (error) {
             next(error);  
         }

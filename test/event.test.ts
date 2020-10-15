@@ -123,6 +123,18 @@ describe('Event Controller Test', () => {
                 })
         });
 
+        it(`try update event with token should respond ${StatusCode.NoContent}`, async (done) => {
+            request
+                .put("/event/"+eventId)
+                .set('auth', tokenAuth)
+                .send({"address":"Viale Certosa, Milano, MI"})
+                .expect(StatusCode.NoContent)
+                .end(function(err, res) {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
         it(`try delete event with token should respond ${StatusCode.NoContent}`, async (done) => {
             request
                 .delete("/event/"+eventId)
