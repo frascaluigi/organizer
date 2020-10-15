@@ -12,7 +12,15 @@ const swaggerDefinition: swaggerJSDoc.SwaggerDefinition = {
 		version: pjson.version,
 		description: 'organizer api',
 	},
-	servers: [{url: `http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}/`}],
+	servers: [{
+		url: `http://${process.env.SERVICE_URL}:${process.env.SERVICE_PORT}/`,
+		variables:{
+			protocol:{
+				enum:["http"],
+				default: "http"
+			}
+		}
+	}],
 	components: {
 		securitySchemes: {
 			jwtAuth: {
